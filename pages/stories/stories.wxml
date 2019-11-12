@@ -1,0 +1,19 @@
+<!--pages/stories/stories.wxml-->
+<view class="card-product" >
+  <view class="card-product-infos">
+    <view class="h2">{{story.content}}</view>
+    <view class="p">{{story.name}}</view>
+  </view>
+  <view class="comment" data-id="{{commment.id}}" data-votes="{{comment.votes}}" wx:for="{{comment.objects}}" wx:for-item="item">
+    <view class="p">{{item.content}}</view>
+    <view id="vote" class="p" bindtap="voteComment">Vote: {{item.votes}}</view>
+  </view>
+  <form bindsubmit="formSubmit" bindreset="formReset">
+    <view class="section">
+      <input name="text" placeholder="Add your comment here" />
+    </view>
+    <view class="btn-area">
+      <button formType="submit">Submit</button>
+    </view>
+  </form>
+</view>

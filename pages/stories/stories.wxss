@@ -1,0 +1,13 @@
+/* pages/stories/stories.wxss */
+.card-product {
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.comment {
+  margin: 0 0 0 20px;
+}
+
+#vote {
+  border: solid lightgray;
+}
