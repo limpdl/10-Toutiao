@@ -12,13 +12,13 @@ Page({
    * Lifecycle function--Called when page load
    */
   onLoad: function (options) {
-    let page = this
-    const request = {
-      url: 'https://cloud.minapp.com/oserve/v1/table/84988/record',
-      header: {'Authorization': 'Bearer 7a82a2b76c38e309ae34ff3c83c87f8409748b0e'},
-      success: this.getResult
-    }
-    wx.request(request)
+    // let page = this
+    // const request = {
+    //   url: 'https://cloud.minapp.com/oserve/v1/table/84988/record',
+    //   header: {'Authorization': 'Bearer 7a82a2b76c38e309ae34ff3c83c87f8409748b0e'},
+    //   success: this.getResult
+    // }
+    // wx.request(request)
   },
 
   getResult(res) {
@@ -48,7 +48,12 @@ Page({
    * Lifecycle function--Called when page show
    */
   onShow: function () {
+    let tableName = 'stories'
+    let Story = new wx.BaaS.TableObject(tableName)
 
+    Story.find().then(
+      this.getResult
+    )
   },
 
   /**

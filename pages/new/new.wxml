@@ -1,13 +1,13 @@
 <!--pages/new/new.wxml-->
 <form bindsubmit="formSubmit" bindreset="formReset">
   <view class="section">
-    <view class="section__title">Name</view>
-    <input name="name" placeholder="Enter your name here" />
+    <view class="section__title">Your Story</view>
+    <textarea name="content" placeholder="Enter your story here"></textarea>
   </view>
 
   <view class="section">
-    <view class="section__title">Your comment</view>
-    <textarea name="content" placeholder="Add your comment here" ></textarea>
+    <view class="section__title">Your Name</view>
+    <input name="name" placeholder="Enter your name here" ></input>
   </view>
 
   <view class="btn-area">

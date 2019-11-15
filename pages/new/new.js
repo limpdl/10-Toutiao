@@ -15,7 +15,25 @@ Page({
 
   },
 
-  
+  formSubmit: function (event) {
+    let tableName = 'stories'
+    let Story = new wx.BaaS.TableObject(tableName)
+    let story = Story.create()
+    let name = event.detail.value.name
+    let content = event.detail.value.content
+
+    let data = {
+      name: name,
+      content: content
+    }
+
+    story.set(data).save().then(res => {
+      wx.reLaunch({
+        url: '/pages/landing/landing',
+      })
+    })
+
+  },
 
   /**
    * Lifecycle function--Called when page is initially rendered

@@ -5,33 +5,59 @@ Page({
    * Page initial data
    */
   data: {
-
+    // story: '',
+    // comment: []
   },
 
   /**
    * Lifecycle function--Called when page load
    */
   onLoad: function (options) {
+    
+    // const request = {
+    //   url: `https://cloud.minapp.com/oserve/v1/table/84988/record/${id}`,
+    //   header: { 'Authorization': 'Bearer 7a82a2b76c38e309ae34ff3c83c87f8409748b0e' },
+    //   success: page.getResult
+    // }
+    // const requestComment = {
+    //   url: 'https://cloud.minapp.com/oserve/v1/table/85188/record/',
+    //   header: { 'Authorization': 'Bearer 7a82a2b76c38e309ae34ff3c83c87f8409748b0e' },
+    //   data: {
+    //     where: { // filtering comments for a specific story
+    //       "story_id": { "$eq": id } // story id
+    //     }
+    //   },
+    //   success: page.getComment
+    // }
+    // wx.request(request)
+    // wx.request(requestComment)
+
     const id = options.id
     let page = this
-    const request = {
-      url: `https://cloud.minapp.com/oserve/v1/table/84988/record/${id}`,
-      header: { 'Authorization': 'Bearer 7a82a2b76c38e309ae34ff3c83c87f8409748b0e' },
-      success: page.getResult
-    }
-    const requestComment = {
-      url: 'https://cloud.minapp.com/oserve/v1/table/85188/record/',
-      header: { 'Authorization': 'Bearer 7a82a2b76c38e309ae34ff3c83c87f8409748b0e' },
-      data: {
-        where: { // filtering comments for a specific story
-          "story_id": { "$eq": id } // story id
-        }
-      },
-      success: page.getComment
-    }
-    wx.request(request)
-    wx.request(requestComment)
+
+    let tableName = 'stories'
+    let Story = new wx.BaaS.TableObject(tableName)
+    let recordID = id
+
+    Story.get(recordID).then(res => {
+      page.setData({
+        story: res.data
+      })
+      console.log("story: ", res)
+    })
     
+    let story_id = options.id
+    let query = new wx.BaaS.Query()
+    query.compare('story_id', '=', story_id)
+    
+    let Comment = new wx.BaaS.TableObject('comments')
+    
+    Comment.setQuery(query).find().then(res => {
+      page.setData({
+        comment: res.data.objects
+      }) 
+      console.log("comment", res)
+    })
   },
 
   voteComment(event) {
@@ -55,37 +81,54 @@ Page({
       }
     })
   },
-  getResult(res) {
-    console.log(res)
-    this.setData({
-      story: res.data
-    })
-  },
+  // getResult(res) {
+  //   console.log(res)
+  //   this.setData({
+  //     story: res.data
+  //   })
+  // },
 
-  getComment(res) {
-    console.log(res)
-    this.setData({
-      comment: res.data
-    })
-  },
+  // getComment(res) {
+  //   console.log(res)
+  //   this.setData({
+  //     comment: res.data
+  //   })
+  // },
 
   formSubmit(event) {
-    console.log("event", event)
-    let comment = {
-      story_id: '5d9618bf5721826d1d517e80',
-      votes: 1,
-      content: 'new comment'
+    let page = this
+    let content = event.detail.value
+    
+    let data = {
+      story_id: page.data.story.id,
+      content: content,
+      name: 'Anonymous',
+      votes: 0
     }
-    console.log("new comment", comment)
-    //const data = event.currentTarget.dataset
 
-    wx.request({
-      url: 'https://cloud.minapp.com/oserve/v1/table/85188/record/',
-      header: { 'Authorization': 'Bearer 7a82a2b76c38e309ae34ff3c83c87f8409748b0e' },
-      data: comment,
-      method: 'POST',
-      success: this.submitSuccess
+    //const data = event.currentTarget.dataset
+    let tableName = 'comments'
+    let Comment = new wx.BaaS.TableObject(tableName)
+    let comment = Comment.create()
+
+    console.log("new comment", comment)
+
+    comment.set(data).save().then(res => {
+      console.log(res)
+      console.log("data content", data.content)
+
+      const comment = res.data
+      let comments = page.data.comments
+      comments.push(comment)
+      page.setData({comments: comment})
     })
+    // wx.request({
+    //   url: 'https://cloud.minapp.com/oserve/v1/table/85188/record/',
+    //   header: { 'Authorization': 'Bearer 7a82a2b76c38e309ae34ff3c83c87f8409748b0e' },
+    //   data: comment,
+    //   method: 'POST',
+    //   success: this.submitSuccess
+    // })
   },
 
   submitSuccess(res) {
